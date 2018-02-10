@@ -1,4 +1,4 @@
-import { matchPath, RouteProps } from 'react-router-dom';
+import { matchPath, RouteProps } from 'react-router-dom'
 
 /**
  * This helps us to make sure all the async code is loaded before rendering.
@@ -6,21 +6,21 @@ import { matchPath, RouteProps } from 'react-router-dom';
 export async function ensureReady(routes: RouteProps[], pathname: string) {
   await Promise.all(
     routes.map(route => {
-      const match = matchPath(pathname || window.location.pathname, route);
+      const match = matchPath(pathname || window.location.pathname, route)
       if (match && route && route.component && (route.component as any).load) {
-        return (route.component as any).load();
+        return (route.component as any).load()
       }
-      return undefined;
+      return undefined
     })
-  );
+  )
 
-  let data;
+  let data
   if (typeof window !== undefined && !!document) {
     data = JSON.parse(
       (document as any)
         .getElementById('server-app-state')
         .textContent.replace(/%3C\/script%3E/g, '</script>')
-    );
+    )
   }
-  return Promise.resolve(data);
+  return Promise.resolve(data)
 }
