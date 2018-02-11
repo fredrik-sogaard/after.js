@@ -1,26 +1,30 @@
-import React, { Component } from 'react';
+// import tachyons from 'tachyons'
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import logo from './react.svg';
 import './Home.css';
-import { Link } from 'react-router-dom';
 
-class Home extends Component {
-  static async getInitialProps({ req, res, match, history, location, ...ctx }) {
-    return { stuff: 'whatever' };
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+class Home extends React.Component {
+  static async getInitialProps() {
+    return sleep(5000).then(() => ({ stuff: 'hello' }));
   }
+
   render() {
-    console.log(this.props);
+    console.log('Home render');
     return (
-      <div className="Home">
-        <div className="Home-header">
-          <img src={logo} className="Home-logo" alt="logo" />
-          <h2>Welcome to After.js</h2>
-        </div>
-        <p className="Home-intro">
-          To get started, edit
-          <code>src/Home.js</code> or <code>src/About.js</code>and save to
-          reload.
-        </p>
-        <Link to="/about">About -></Link>
+      <div className="page">
+        <img className="logo" src={logo} alt="After.js Logo" />
+        <NavLink to="/">Home (5 sec getInitialProps timeout)</NavLink>
+        <NavLink to="/about">About (1 sec getInitialProps timeout)</NavLink>
+        <h1>Home (pre-Razzle)</h1>
+        <p>Click the button to prefetch data for the About page</p>
+        <button onClick={() => this.props.prefetch('/about')}>
+          Prefetch Data!
+        </button>
+
+        <pre>data: {this.props.stuff ? this.props.stuff : 'Loading...'}</pre>
       </div>
     );
   }

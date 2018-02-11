@@ -1,41 +1,42 @@
-import * as React from 'react';
-import { Switch, Route, withRouter } from 'react-router-dom';
-import { loadInitialProps } from './loadInitialProps';
+import * as React from 'react'
+import { Switch, Route, withRouter } from 'react-router-dom'
+import { loadInitialProps } from './loadInitialProps'
 
 class Afterparty extends React.Component<any, any> {
-  prefetcherCache: any;
+  prefetcherCache: any
   constructor(props: any) {
-    super(props);
+    super(props)
     this.state = {
       data: props.data,
       previousLocation: null,
-    };
-    this.prefetcherCache = {};
+    }
+    this.prefetcherCache = {}
   }
 
   // only runs clizzient
   componentWillReceiveProps(nextProps: any, nextState: any) {
-    const navigated = nextProps.location !== this.props.location;
+    const navigated = nextProps.location !== this.props.location
     if (navigated) {
-      window.scrollTo(0, 0);
+      window.scrollTo(0, 0)
       // save the location so we can render the old screen
       this.setState({
         previousLocation: this.props.location,
         data: undefined, // unless you want to keep it
-      });
-      const { data, match, routes, history, location, ...rest } = nextProps;
+      })
+      const { data, match, routes, history, location, ...rest } = nextProps
       loadInitialProps(this.props.routes, nextProps.location.pathname, {
         location: nextProps.location,
         history: nextProps.history,
         ...rest,
       })
         .then(({ data }) => {
-          this.setState({ previousLocation: null, data: data });
+          console.log('=> then')
+          this.setState({ previousLocation: null, data: data })
         })
         .catch(e => {
           // @todo we should more cleverly handle errors???
-          console.log(e);
-        });
+          console.log(e)
+        })
     }
   }
 
@@ -46,18 +47,17 @@ class Afterparty extends React.Component<any, any> {
       .then(({ data }) => {
         this.prefetcherCache = Object.assign({}, this.prefetcherCache, {
           [pathname]: data,
-        });
+        })
       })
-      .catch(e => console.log(e));
-  };
+      .catch(e => console.log(e))
+  }
 
   render() {
-    const { previousLocation, data } = this.state;
-    const { location } = this.props;
-    const initialData = this.prefetcherCache[location.pathname] || data;
-    console.log(initialData);
+    const { previousLocation, data } = this.state
+    const { location } = this.props
+    const initialData = this.prefetcherCache[location.pathname] || data
     return (
-      <Switch location={previousLocation || location}>
+      <Switch>
         {this.props.routes.map((r: any, i: number) => (
           <Route
             key={`route--${i}`}
@@ -76,8 +76,8 @@ class Afterparty extends React.Component<any, any> {
           />
         ))}
       </Switch>
-    );
+    )
   }
 }
 
-export const After = withRouter(Afterparty);
+export const After = withRouter(Afterparty)
